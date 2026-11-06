@@ -1,0 +1,1211 @@
+<title>VE Three D Solutions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700&display=swap">
+
+<style>
+/* Layout: sticky nav + full-width sections + client portal modal */
+:root {
+  --bg: #f8f7f5;
+  --bg2: #ffffff;
+  --fg: #1a1a1a;
+  --fg2: #555550;
+  --fg3: #888880;
+  --accent: #824646;
+  --accent2: #4e2320;
+  --accent-bg: #f7efef;
+  --border: #e2e0dc;
+  --card-bg: #ffffff;
+  --nav-bg: rgba(248,247,245,0.95);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161614;
+    --bg2: #1e1e1b;
+    --fg: #f0ede8;
+    --fg2: #aaa89f;
+    --fg3: #6e6c65;
+    --accent: #c06464;
+    --accent2: #e08080;
+    --accent-bg: #2a1818;
+    --border: #2e2e2a;
+    --card-bg: #1e1e1b;
+    --nav-bg: rgba(22,22,20,0.95);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161614;
+  --bg2: #1e1e1b;
+  --fg: #f0ede8;
+  --fg2: #aaa89f;
+  --fg3: #6e6c65;
+  --accent: #c06464;
+  --accent2: #e08080;
+  --accent-bg: #2a1818;
+  --border: #2e2e2a;
+  --card-bg: #1e1e1b;
+  --nav-bg: rgba(22,22,20,0.95);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Barlow', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+
+/* NAV */
+nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 101;
+  background: var(--nav-bg);
+}
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 14px;
+  gap: 16px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.nav-logo-icon {
+  width: 36px;
+  height: 36px;
+}
+.nav-logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.nav-logo-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+.nav-logo-reg {
+  font-size: 10px;
+  color: var(--fg3);
+  letter-spacing: 0.04em;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+}
+.nav-links a {
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg2);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-portal-btn {
+  background: var(--accent);
+  color: #fff !important;
+  padding: 8px 18px;
+  border-radius: 4px;
+  transition: background 0.2s !important;
+}
+.nav-portal-btn:hover { background: var(--accent2) !important; color: #fff !important; }
+
+/* HERO */
+.hero {
+  background: var(--bg);
+  padding-block: 80px 72px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(38px, 5vw, 60px);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--fg);
+  margin-bottom: 20px;
+}
+.hero h1 span { color: var(--accent); }
+.hero-desc {
+  font-size: 17px;
+  color: var(--fg2);
+  line-height: 1.65;
+  max-width: 440px;
+  margin-bottom: 36px;
+}
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 13px 28px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: var(--accent2); }
+.btn-secondary {
+  background: transparent;
+  color: var(--fg);
+  border: 1.5px solid var(--border);
+  padding: 12px 28px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.hero-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.hero-stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.hero-stat {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+.hero-stat-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.hero-stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg3);
+  margin-top: 4px;
+}
+.hero-badge {
+  background: var(--accent-bg);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hero-badge-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  color: var(--accent);
+}
+.hero-badge-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg2);
+  line-height: 1.4;
+}
+
+/* SECTIONS */
+.section {
+  padding-block: 72px;
+  border-bottom: 1px solid var(--border);
+}
+.section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.section-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 800;
+  line-height: 1.1;
+  text-wrap: balance;
+  color: var(--fg);
+  margin-bottom: 16px;
+}
+.section-sub {
+  font-size: 16px;
+  color: var(--fg2);
+  max-width: 560px;
+  line-height: 1.65;
+  margin-bottom: 48px;
+}
+
+/* ABOUT */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+.about-text p {
+  font-size: 16px;
+  color: var(--fg2);
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+.about-text p:last-child { margin-bottom: 0; }
+.about-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.highlight-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  padding: 16px 20px;
+}
+.highlight-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg);
+  margin-bottom: 4px;
+}
+.highlight-text {
+  font-size: 14px;
+  color: var(--fg2);
+  line-height: 1.5;
+}
+
+/* SERVICES */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.service-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 28px 24px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.service-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(122,42,42,0.08);
+}
+.service-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--accent-bg);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--accent);
+}
+.service-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 8px;
+}
+.service-desc {
+  font-size: 14px;
+  color: var(--fg2);
+  line-height: 1.6;
+}
+
+/* PRODUCTS */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.product-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.product-img {
+  aspect-ratio: 4/3;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.product-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--fg3);
+}
+.product-img svg { opacity: 0.4; }
+.product-info { padding: 16px 18px; }
+.product-code {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.product-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 6px;
+}
+.product-desc {
+  font-size: 13px;
+  color: var(--fg2);
+  line-height: 1.5;
+}
+
+/* PROCESS */
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.process-step {
+  background: var(--card-bg);
+  padding: 28px 22px;
+}
+.step-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.step-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.step-desc {
+  font-size: 13px;
+  color: var(--fg2);
+  line-height: 1.55;
+}
+
+/* PORTAL SECTION */
+.portal-section {
+  background: var(--bg2);
+  padding-block: 72px;
+  border-bottom: 1px solid var(--border);
+}
+.portal-box {
+  max-width: 540px;
+  margin: 0 auto;
+  text-align: center;
+}
+.portal-box .section-title { text-align: center; }
+.portal-box .section-sub { text-align: center; margin-left: auto; margin-right: auto; }
+.portal-input-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 32px;
+}
+.portal-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  padding: 13px 16px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--fg);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.portal-input::placeholder { text-transform: none; letter-spacing: 0; color: var(--fg3); font-weight: 400; }
+.portal-input:focus { border-color: var(--accent); }
+.portal-hint {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--fg3);
+}
+
+/* PORTAL RESULT */
+.portal-result {
+  margin-top: 32px;
+  text-align: left;
+}
+.portal-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.portal-client-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--fg);
+}
+.portal-client-id {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent);
+  padding: 4px 10px;
+  border-radius: 3px;
+}
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.order-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg3);
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--border);
+  background: var(--bg);
+}
+.order-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg);
+  vertical-align: middle;
+}
+.order-table tr:last-child td { border-bottom: none; }
+.order-table tr:hover td { background: var(--accent-bg); }
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.status-completed { background: #d4edda; color: #1a5c2a; }
+.status-progress { background: #fff3cd; color: #664d00; }
+.status-pending { background: #e2e3e5; color: #383d41; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .status-completed { background: #0d2e18; color: #4caf70; }
+  :root:not([data-theme="light"]) .status-progress { background: #2e2000; color: #ffc93d; }
+  :root:not([data-theme="light"]) .status-pending { background: #1e1e1e; color: #9e9e9e; }
+}
+:root[data-theme="dark"] .status-completed { background: #0d2e18; color: #4caf70; }
+:root[data-theme="dark"] .status-progress { background: #2e2000; color: #ffc93d; }
+:root[data-theme="dark"] .status-pending { background: #1e1e1e; color: #9e9e9e; }
+
+.portal-error {
+  background: var(--accent-bg);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 14px 18px;
+  font-size: 14px;
+  color: var(--accent2);
+  font-weight: 600;
+  margin-top: 20px;
+}
+.portal-back-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.portal-back-btn:hover { text-decoration: underline; }
+
+/* CONTACT */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+.contact-info { display: flex; flex-direction: column; gap: 16px; }
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.contact-item-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--accent-bg);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--accent);
+}
+.contact-item-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg3);
+  margin-bottom: 2px;
+}
+.contact-item-value {
+  font-size: 15px;
+  color: var(--fg);
+  font-weight: 500;
+}
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg3);
+}
+.form-input, .form-textarea {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  padding: 11px 14px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 15px;
+  color: var(--fg);
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+.form-textarea { resize: vertical; min-height: 100px; }
+
+/* FOOTER */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding-block: 36px;
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.footer-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+.footer-reg {
+  font-size: 12px;
+  color: var(--fg3);
+}
+.footer-right {
+  font-size: 13px;
+  color: var(--fg3);
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .hero-visual { display: none; }
+  .about-grid { grid-template-columns: 1fr; gap: 32px; }
+  .services-grid { grid-template-columns: 1fr; }
+  .products-grid { grid-template-columns: 1fr 1fr; }
+  .process-steps { grid-template-columns: 1fr 1fr; }
+  .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+  .nav-links { display: none; }
+  .portal-input-row { flex-direction: column; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .products-grid { grid-template-columns: 1fr; }
+  .process-steps { grid-template-columns: 1fr; }
+  .hero-stat-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo" onclick="showSection('home')">
+      <svg class="nav-logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 4L18 32L32 4" stroke="#824646" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M9 4L18 20L27 4" stroke="#4e2320" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+      </svg>
+      <div class="nav-logo-text">
+        <span class="nav-logo-name">VE Three D Solutions</span>
+        <span class="nav-logo-reg">Reg No: 003895297-U</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#portal" class="nav-portal-btn" onclick="document.getElementById('portal').scrollIntoView({behavior:'smooth'});return false;">Client Portal</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Industrial 3D Printing · Malaysia</div>
+      <h1>Precision Parts,<br><span>Built to Spec</span></h1>
+      <p class="hero-desc">Custom 3D printed components for factories and industrial use. From prototype to finished part — we handle the design, printing, and delivery.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Request a Quote</a>
+        <a href="#products" class="btn-secondary">View Products</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-stat-row">
+        <div class="hero-stat">
+          <div class="hero-stat-num">PLA</div>
+          <div class="hero-stat-label">Material Grade</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">0.2mm</div>
+          <div class="hero-stat-label">Layer Precision</div>
+        </div>
+      </div>
+      <div class="hero-badge">
+        <svg class="hero-badge-icon" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2"/>
+          <path d="M10 16l4 4 8-8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="hero-badge-text">SSM Registered Enterprise · Prototype confirmation before full production</div>
+      </div>
+      <div class="hero-badge">
+        <svg class="hero-badge-icon" viewBox="0 0 32 32" fill="none">
+          <rect x="4" y="8" width="24" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 13h24" stroke="currentColor" stroke-width="2"/>
+          <path d="M10 18h4M18 18h4M10 22h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <div class="hero-badge-text">Client portal access — track your orders anytime with your Client ID</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="section-inner">
+    <div class="section-eyebrow">Who We Are</div>
+    <h2 class="section-title">Built from the Factory Floor</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>VE Three D Solutions is a Malaysian-based 3D printing enterprise specialising in custom industrial parts. We work with factories, machine operators, and production teams who need precise, durable components — fast.</p>
+        <p>Our background is in CNC and industrial automation, which means we understand what parts actually need to do in a production environment. Every print is designed with real factory conditions in mind, not just aesthetics.</p>
+        <p>We handle the full process: from your drawing or idea, through prototype confirmation, to the finished printed part ready for deployment.</p>
+      </div>
+      <div class="about-highlights">
+        <div class="highlight-item">
+          <div class="highlight-title">Industrial Background</div>
+          <div class="highlight-text">CNC and automation experience — we know what parts need to withstand on the factory floor.</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-title">Prototype First</div>
+          <div class="highlight-text">We confirm every design with a prototype before committing to full production. No surprises.</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-title">Custom Drawings Welcome</div>
+          <div class="highlight-text">Provide your own drawing or describe what you need — we handle the CAD and print.</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-title">SSM Registered</div>
+          <div class="highlight-text">Reg No: 003895297-U. Official invoices and documentation provided for every order.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section" id="services">
+  <div class="section-inner">
+    <div class="section-eyebrow">What We Do</div>
+    <h2 class="section-title">Our Services</h2>
+    <p class="section-sub">We focus on industrial and functional 3D printing — not hobby parts, but components that need to perform.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+        </div>
+        <div class="service-title">Prototype Development</div>
+        <div class="service-desc">Turn your idea or sketch into a physical prototype. We confirm fit, form, and function before you commit to bulk production.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/>
+          </svg>
+        </div>
+        <div class="service-title">Custom Part Printing</div>
+        <div class="service-desc">Provide a drawing, CAD file, or dimensions — we print the part to your spec. Suitable for jigs, fixtures, brackets, and machine components.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="service-title">Industrial Components</div>
+        <div class="service-desc">Part catchers, gripper jaws, conveyor guides, and other factory-use parts designed for real production environments.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+        </div>
+        <div class="service-title">Design Assistance</div>
+        <div class="service-desc">Don't have a CAD file? Describe what you need or provide a rough sketch — we handle the 3D modelling before printing.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <div class="service-title">Small Batch Production</div>
+        <div class="service-desc">Need 5 to 50 pieces of the same part? We handle repeat production runs with consistent quality and lead time.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <div class="service-title">Quality & Documentation</div>
+        <div class="service-desc">Every order includes photos of the finished parts. Official invoices with Reg No: 003895297-U provided on request.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section" id="products">
+  <div class="section-inner">
+    <div class="section-eyebrow">Sample Products</div>
+    <h2 class="section-title">What We've Made</h2>
+    <p class="section-sub">Examples of completed work. All products are custom-made — these are reference samples, not off-the-shelf items.</p>
+    <div class="products-grid">
+      <div class="product-card">
+        <div class="product-img">
+          <div class="product-img-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span style="font-size:12px;color:var(--fg3)">Photo coming soon</span>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-code">FPC-01</div>
+          <div class="product-name">Finished Part Catcher</div>
+          <div class="product-desc">Catches CNC machined parts at the conveyor end. Prevents drops and surface damage on finished components.</div>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img">
+          <div class="product-img-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span style="font-size:12px;color:var(--fg3)">Photo coming soon</span>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-code">GJ-01</div>
+          <div class="product-name">Gripper Jaw Set</div>
+          <div class="product-desc">Custom gripper jaws for robotic arms and gantry systems. Designed to match specific part profiles.</div>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img">
+          <div class="product-img-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span style="font-size:12px;color:var(--fg3)">Photo coming soon</span>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-code">CUSTOM</div>
+          <div class="product-name">Your Custom Part</div>
+          <div class="product-desc">Send us your drawing or dimensions. We prototype, confirm with you, then produce to your specification.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="section" id="process">
+  <div class="section-inner">
+    <div class="section-eyebrow">How It Works</div>
+    <h2 class="section-title">From Idea to Finished Part</h2>
+    <p class="section-sub" style="margin-bottom:36px">Four steps from your first message to a part ready for the production line.</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-num">01</div>
+        <div class="step-title">Send Your Drawing</div>
+        <div class="step-desc">Share a sketch, CAD file, or dimensions. If you don't have one, describe what you need.</div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">02</div>
+        <div class="step-title">We Prepare the Model</div>
+        <div class="step-desc">We model or slice your part and confirm the design before any printing starts.</div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">03</div>
+        <div class="step-title">Prototype & Confirm</div>
+        <div class="step-desc">A prototype is printed first. You check fit and function before we proceed to full quantity.</div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">04</div>
+        <div class="step-title">Production & Delivery</div>
+        <div class="step-desc">Full batch printed to spec. Photos provided on completion, invoice issued on request.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENT PORTAL -->
+<section class="portal-section" id="portal">
+  <div class="portal-box">
+    <div class="section-eyebrow" style="text-align:center">Client Portal</div>
+    <h2 class="section-title">View Your Orders</h2>
+    <p class="section-sub">Enter the Client ID provided by VE Three D Solutions to view your order status and completed products.</p>
+
+    <div id="portal-search">
+      <div class="portal-input-row">
+        <input class="portal-input" id="client-id-input" type="text" placeholder="Enter your Client ID (e.g. VE-001)" maxlength="20" autocomplete="off">
+        <button class="btn-primary" id="portal-search-btn" onclick="searchClient()">Search</button>
+      </div>
+      <div class="portal-hint">Client IDs are provided by VE Three D Solutions. Contact us if you don't have one.</div>
+      <div id="portal-error" class="portal-error" hidden></div>
+    </div>
+
+    <div id="portal-result" class="portal-result" hidden>
+      <div class="portal-result-header">
+        <div class="portal-client-name" id="result-client-name"></div>
+        <div class="portal-client-id" id="result-client-id"></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="order-table" id="result-table">
+          <thead>
+            <tr>
+              <th>Part Code</th>
+              <th>Description</th>
+              <th>Qty</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="result-tbody"></tbody>
+        </table>
+      </div>
+      <button class="portal-back-btn" onclick="resetPortal()">← Search Again</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="section-inner">
+    <div class="section-eyebrow">Get In Touch</div>
+    <h2 class="section-title">Request a Quote</h2>
+    <p class="section-sub">Tell us what you need. We'll get back to you with a price and lead time estimate.</p>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-item-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .84h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+          </div>
+          <div>
+            <div class="contact-item-label">WhatsApp / Phone</div>
+            <div class="contact-item-value">Contact us via WhatsApp for fastest response</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <div class="contact-item-label">Email</div>
+            <div class="contact-item-value">vethreeDsolutions@gmail.com</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <div class="contact-item-label">Based In</div>
+            <div class="contact-item-value">Selangor, Malaysia</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          </div>
+          <div>
+            <div class="contact-item-label">Registration</div>
+            <div class="contact-item-value">SSM Reg No: 003895297-U</div>
+          </div>
+        </div>
+      </div>
+      <form class="contact-form" onsubmit="handleContact(event)">
+        <div class="form-group">
+          <label class="form-label" for="cf-name">Your Name / Company</label>
+          <input class="form-input" id="cf-name" type="text" placeholder="e.g. Notion Venture Sdn Bhd">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cf-part">Part Description</label>
+          <input class="form-input" id="cf-part" type="text" placeholder="e.g. Part catcher for CNC lathe, 80mm width">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cf-qty">Quantity Needed</label>
+          <input class="form-input" id="cf-qty" type="text" placeholder="e.g. 10 pieces">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cf-msg">Additional Notes</label>
+          <textarea class="form-textarea" id="cf-msg" placeholder="Material preference, drawing reference, deadline, etc."></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%">Send Enquiry</button>
+        <div id="cf-success" hidden style="font-size:14px;color:var(--accent);font-weight:600;text-align:center;padding:8px 0">✓ Message noted — please send it via WhatsApp or email using the contact info on the left.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+        <path d="M4 4L18 32L32 4" stroke="#824646" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M9 4L18 20L27 4" stroke="#4e2320" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+      </svg>
+      <div>
+        <div class="footer-name">VE Three D Solutions</div>
+        <div class="footer-reg">SSM Reg No: 003895297-U · Selangor, Malaysia</div>
+      </div>
+    </div>
+    <div class="footer-right">© 2024 VE Three D Solutions. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+// ---- CLIENT DATA ----
+// Add more clients here: { id, name, orders: [{code, desc, qty, status, date}] }
+const clients = {
+  "VE-001": {
+    name: "Notion Venture Sdn Bhd",
+    orders: [
+      { code: "FPC-01", desc: "Finished Part Catcher", qty: 5, status: "completed", date: "Oct 2024" },
+      { code: "GJ-01", desc: "Gripper Jaw Set (L)", qty: 2, status: "completed", date: "Oct 2024" },
+      { code: "FPC-02", desc: "Part Catcher v2 (Modified)", qty: 10, status: "progress", date: "Nov 2024" },
+    ]
+  },
+  "VE-DEMO": {
+    name: "Demo Client",
+    orders: [
+      { code: "PROTO-01", desc: "Custom Bracket Prototype", qty: 1, status: "completed", date: "Oct 2024" },
+      { code: "PROD-01", desc: "Custom Bracket Production", qty: 20, status: "pending", date: "Nov 2024" },
+    ]
+  }
+};
+
+function searchClient() {
+  const input = document.getElementById('client-id-input');
+  const id = input.value.trim().toUpperCase();
+  const errorEl = document.getElementById('portal-error');
+  const resultEl = document.getElementById('portal-result');
+  const searchEl = document.getElementById('portal-search');
+
+  errorEl.hidden = true;
+
+  if (!id) {
+    errorEl.textContent = 'Please enter your Client ID.';
+    errorEl.hidden = false;
+    return;
+  }
+
+  const client = clients[id];
+  if (!client) {
+    errorEl.textContent = 'Client ID not found. Please check your ID or contact us.';
+    errorEl.hidden = false;
+    return;
+  }
+
+  // Show result
+  document.getElementById('result-client-name').textContent = client.name;
+  document.getElementById('result-client-id').textContent = id;
+
+  const tbody = document.getElementById('result-tbody');
+  tbody.innerHTML = '';
+  client.orders.forEach(order => {
+    const tr = document.createElement('tr');
+    const statusClass = order.status === 'completed' ? 'status-completed' : order.status === 'progress' ? 'status-progress' : 'status-pending';
+    const statusLabel = order.status === 'completed' ? 'Completed' : order.status === 'progress' ? 'In Progress' : 'Pending';
+    tr.innerHTML = `
+      <td><strong>${order.code}</strong></td>
+      <td>${order.desc}</td>
+      <td style="font-variant-numeric:tabular-nums">${order.qty}</td>
+      <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+      <td style="color:var(--fg3);font-size:13px">${order.date}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  searchEl.hidden = true;
+  resultEl.hidden = false;
+}
+
+function resetPortal() {
+  document.getElementById('portal-search').hidden = false;
+  document.getElementById('portal-result').hidden = true;
+  document.getElementById('client-id-input').value = '';
+  document.getElementById('portal-error').hidden = true;
+}
+
+// Enter key on input
+document.getElementById('client-id-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') searchClient();
+});
+
+// Contact form
+function handleContact(e) {
+  e.preventDefault();
+  document.getElementById('cf-success').hidden = false;
+}
+
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', function(e) {
+    const id = this.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
