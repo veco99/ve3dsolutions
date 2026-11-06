@@ -749,10 +749,6 @@ footer {
 <nav>
   <div class="nav-inner">
     <a href="#" class="nav-logo" onclick="showSection('home')">
-      <svg class="nav-logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 4L18 32L32 4" stroke="#824646" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M9 4L18 20L27 4" stroke="#4e2320" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
-      </svg>
       <div class="nav-logo-text">
         <span class="nav-logo-name">VE Three D Solutions</span>
         <span class="nav-logo-reg">Reg No: 003895297-U</span>
@@ -1102,10 +1098,6 @@ footer {
 <footer>
   <div class="footer-inner">
     <div class="footer-left">
-      <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-        <path d="M4 4L18 32L32 4" stroke="#824646" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M9 4L18 20L27 4" stroke="#4e2320" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
-      </svg>
       <div>
         <div class="footer-name">VE Three D Solutions</div>
         <div class="footer-reg">SSM Reg No: 003895297-U · Selangor, Malaysia</div>
@@ -1116,27 +1108,11 @@ footer {
 </footer>
 
 <script>
-// ---- CLIENT DATA ----
-// Add more clients here: { id, name, orders: [{code, desc, qty, status, date}] }
-const clients = {
-  "VE-001": {
-    name: "Notion Venture Sdn Bhd",
-    orders: [
-      { code: "FPC-01", desc: "Finished Part Catcher", qty: 5, status: "completed", date: "Oct 2024" },
-      { code: "GJ-01", desc: "Gripper Jaw Set (L)", qty: 2, status: "completed", date: "Oct 2024" },
-      { code: "FPC-02", desc: "Part Catcher v2 (Modified)", qty: 10, status: "progress", date: "Nov 2024" },
-    ]
-  },
-  "VE-DEMO": {
-    name: "Demo Client",
-    orders: [
-      { code: "PROTO-01", desc: "Custom Bracket Prototype", qty: 1, status: "completed", date: "Oct 2024" },
-      { code: "PROD-01", desc: "Custom Bracket Production", qty: 20, status: "pending", date: "Nov 2024" },
-    ]
-  }
-};
+// ---- SUPABASE CONFIG ----
+const SUPABASE_URL = 'https://yhqvvccxivonqrzdffic.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_WILi3ensOcMLNAfuHofkFQ_OgYgTqLj';
 
-function searchClient() {
+async function searchClient() {
   const input = document.getElementById('client-id-input');
   const id = input.value.trim().toUpperCase();
   const errorEl = document.getElementById('portal-error');
@@ -1151,35 +1127,67 @@ function searchClient() {
     return;
   }
 
-  const client = clients[id];
-  if (!client) {
-    errorEl.textContent = 'Client ID not found. Please check your ID or contact us.';
+  // Show loading state
+  const btn = document.querySelector('#portal-search .btn-primary');
+  const origText = btn.textContent;
+  btn.textContent = 'Loading...';
+  btn.disabled = true;
+
+  try {
+    // Fetch client from Supabase
+    const clientRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/clients?id=eq.${encodeURIComponent(id)}&select=*`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    const clientData = await clientRes.json();
+
+    if (!clientData.length) {
+      errorEl.textContent = 'Client ID not found. Please check your ID or contact us.';
+      errorEl.hidden = false;
+      btn.textContent = origText;
+      btn.disabled = false;
+      return;
+    }
+
+    const client = clientData[0];
+
+    // Fetch orders
+    const ordersRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/orders?client_id=eq.${encodeURIComponent(id)}&select=*&order=id.asc`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    const orders = await ordersRes.json();
+
+    // Show result
+    document.getElementById('result-client-name').textContent = client.company || client.name;
+    document.getElementById('result-client-id').textContent = id;
+
+    const tbody = document.getElementById('result-tbody');
+    tbody.innerHTML = '';
+    orders.forEach(order => {
+      const tr = document.createElement('tr');
+      const statusClass = order.status === 'completed' ? 'status-completed' : order.status === 'progress' ? 'status-progress' : 'status-pending';
+      const statusLabel = order.status === 'completed' ? 'Completed' : order.status === 'progress' ? 'In Progress' : 'Pending';
+      tr.innerHTML = `
+        <td><strong>${order.order_code}</strong></td>
+        <td>${order.description}</td>
+        <td style="font-variant-numeric:tabular-nums">${order.quantity}</td>
+        <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+        <td style="color:var(--fg3);font-size:13px">${order.order_date}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    searchEl.hidden = true;
+    resultEl.hidden = false;
+
+  } catch (err) {
+    errorEl.textContent = 'Connection error. Please try again.';
     errorEl.hidden = false;
-    return;
   }
 
-  // Show result
-  document.getElementById('result-client-name').textContent = client.name;
-  document.getElementById('result-client-id').textContent = id;
-
-  const tbody = document.getElementById('result-tbody');
-  tbody.innerHTML = '';
-  client.orders.forEach(order => {
-    const tr = document.createElement('tr');
-    const statusClass = order.status === 'completed' ? 'status-completed' : order.status === 'progress' ? 'status-progress' : 'status-pending';
-    const statusLabel = order.status === 'completed' ? 'Completed' : order.status === 'progress' ? 'In Progress' : 'Pending';
-    tr.innerHTML = `
-      <td><strong>${order.code}</strong></td>
-      <td>${order.desc}</td>
-      <td style="font-variant-numeric:tabular-nums">${order.qty}</td>
-      <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
-      <td style="color:var(--fg3);font-size:13px">${order.date}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  searchEl.hidden = true;
-  resultEl.hidden = false;
+  btn.textContent = origText;
+  btn.disabled = false;
 }
 
 function resetPortal() {
