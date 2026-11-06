@@ -1001,8 +1001,8 @@ footer {
 <section class="portal-section" id="portal">
   <div class="portal-box">
     <div class="section-eyebrow" style="text-align:center">Client Portal</div>
-    <h2 class="section-title">View Your Orders</h2>
-    <p class="section-sub">Enter the Client ID provided by VE Three D Solutions to view your order status and completed products.</p>
+    <h2 class="section-title">Your Product Showcase</h2>
+    <p class="section-sub">Enter your Client ID to view your custom products on record with VE Three D Solutions.</p>
 
     <div id="portal-search">
       <div class="portal-input-row">
@@ -1018,20 +1018,7 @@ footer {
         <div class="portal-client-name" id="result-client-name"></div>
         <div class="portal-client-id" id="result-client-id"></div>
       </div>
-      <div style="overflow-x:auto">
-        <table class="order-table" id="result-table">
-          <thead>
-            <tr>
-              <th>Part Code</th>
-              <th>Description</th>
-              <th>Qty</th>
-              <th>Status</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody id="result-tbody"></tbody>
-        </table>
-      </div>
+      <div id="product-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:16px;"></div>
       <button class="portal-back-btn" onclick="resetPortal()">← Search Again</button>
     </div>
   </div>
@@ -1154,32 +1141,35 @@ async function searchClient() {
 
     const client = clientData[0];
 
-    // Fetch orders
-    const ordersRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/orders?client_id=eq.${encodeURIComponent(id)}&select=*&order=id.asc`,
+    // Fetch products
+    const productsRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/products?client_id=eq.${encodeURIComponent(id)}&select=*&order=id.asc`,
       { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
     );
-    const orders = await ordersRes.json();
+    const products = await productsRes.json();
 
     // Show result
     document.getElementById('result-client-name').textContent = client.company || client.name;
     document.getElementById('result-client-id').textContent = id;
 
-    const tbody = document.getElementById('result-tbody');
-    tbody.innerHTML = '';
-    orders.forEach(order => {
-      const tr = document.createElement('tr');
-      const statusClass = order.status === 'completed' ? 'status-completed' : order.status === 'progress' ? 'status-progress' : 'status-pending';
-      const statusLabel = order.status === 'completed' ? 'Completed' : order.status === 'progress' ? 'In Progress' : 'Pending';
-      tr.innerHTML = `
-        <td><strong>${order.order_code}</strong></td>
-        <td>${order.description}</td>
-        <td style="font-variant-numeric:tabular-nums">${order.quantity}</td>
-        <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
-        <td style="color:var(--fg3);font-size:13px">${order.order_date}</td>
-      `;
-      tbody.appendChild(tr);
-    });
+    const container = document.getElementById('product-cards');
+    container.innerHTML = '';
+    if (!products.length) {
+      container.innerHTML = '<p style="color:var(--fg3);font-size:14px;">No products on record yet. Contact us to get started.</p>';
+    } else {
+      products.forEach(product => {
+        const card = document.createElement('div');
+        card.style.cssText = 'background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px;';
+        card.innerHTML = `
+          <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--accent);text-transform:uppercase;">${product.product_code || ''}</div>
+          <div style="font-size:17px;font-weight:700;color:var(--fg1);">${product.name}</div>
+          <div style="font-size:13px;color:var(--fg3);line-height:1.6;">${product.description || ''}</div>
+          ${product.material ? `<div style="font-size:12px;color:var(--fg3);">Material: <span style="color:var(--fg2)">${product.material}</span></div>` : ''}
+          ${product.created_at ? `<div style="font-size:12px;color:var(--fg3);margin-top:4px;">${new Date(product.created_at).toLocaleDateString('en-MY',{year:'numeric',month:'short'})}</div>` : ''}
+        `;
+        container.appendChild(card);
+      });
+    }
 
     searchEl.hidden = true;
     resultEl.hidden = false;
