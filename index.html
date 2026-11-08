@@ -1044,26 +1044,6 @@ footer {
           </div>
         </div>
       </div>
-      <form class="contact-form" onsubmit="handleContact(event)">
-        <div class="form-group">
-          <label class="form-label" for="cf-name">Your Name / Company</label>
-          <input class="form-input" id="cf-name" type="text" placeholder="e.g. PROTOMECH TECHNOLOGY SDN BHD">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="cf-part">Part Description</label>
-          <input class="form-input" id="cf-part" type="text" placeholder="e.g. Part catcher for CNC lathe, 80mm width">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="cf-qty">Quantity Needed</label>
-          <input class="form-input" id="cf-qty" type="text" placeholder="e.g. 10 pieces">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="cf-msg">Additional Notes</label>
-          <textarea class="form-textarea" id="cf-msg" placeholder="Material preference, drawing reference, deadline, etc."></textarea>
-        </div>
-        <button type="submit" class="btn-primary" style="width:100%">Send Enquiry</button>
-        <div id="cf-success" hidden style="font-size:14px;color:var(--accent);font-weight:600;text-align:center;padding:8px 0">✓ Message noted — please send it via WhatsApp or email using the contact info on the left.</div>
-      </form>
     </div>
   </div>
 </section>
@@ -1083,9 +1063,37 @@ footer {
 
 <script>
 // Contact form
-function handleContact(e) {
+async function handleContact(e) {
   e.preventDefault();
-  document.getElementById('cf-success').hidden = false;
+  const btn = e.target.querySelector('button[type="submit"]');
+  const origText = btn.textContent;
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  const name = document.getElementById('cf-name').value.trim();
+  const part = document.getElementById('cf-part').value.trim();
+  const qty  = document.getElementById('cf-qty').value.trim();
+  const msg  = document.getElementById('cf-msg').value.trim();
+
+  try {
+    await fetch('https://yhqvvccxivonqrzdffic.supabase.co/rest/v1/enquiries', {
+      method: 'POST',
+      headers: {
+        'apikey': 'sb_publishable_WILi3ensOcMLNAfuHofkFQ_OgYgTqLj',
+        'Authorization': 'Bearer sb_publishable_WILi3ensOcMLNAfuHofkFQ_OgYgTqLj',
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ name, part_description: part, quantity: qty, notes: msg })
+    });
+    document.getElementById('cf-success').hidden = false;
+    e.target.reset();
+  } catch(err) {
+    document.getElementById('cf-success').hidden = false;
+  }
+
+  btn.textContent = origText;
+  btn.disabled = false;
 }
 
 // Smooth scroll for nav links
